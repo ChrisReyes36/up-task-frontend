@@ -6,12 +6,21 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function AddTaskModal() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const show = searchParams.has("newTask");
+
   return (
     <>
-      <Transition appear show={true} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => {}}>
+      <Transition appear show={show} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => navigate("", { replace: true })}
+        >
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
