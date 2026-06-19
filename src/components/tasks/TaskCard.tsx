@@ -1,4 +1,4 @@
-import type { Task } from "@/types";
+import { useNavigate, useParams } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import {
   EllipsisVerticalIcon,
@@ -6,12 +6,32 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import type { Task } from "@/types";
+import { deleteTask } from "@/api/TaskAPI";
 
 type TaskCardProps = {
   task: Task;
 };
 
 export default function TaskCard({ task }: TaskCardProps) {
+  const navigate = useNavigate();
+  const params = useParams();
+  const projectId = params.projectId!;
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: deleteTask,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["editProject", projectId] });
+      toast.success(data);
+    },
+  });
+
   return (
     <li className="p-5 bg-white border-slate-300 flex justify-between gap-3">
       <div className="min-w-0 flex flex-col gap-y-4">
@@ -58,6 +78,9 @@ export default function TaskCard({ task }: TaskCardProps) {
                   className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-gray-900 ${
                     focus ? "bg-gray-100" : ""
                   }`}
+                  onClick={() =>
+                    navigate(location.pathname + `?editTask=${task._id}`)
+                  }
                 >
                   <PencilIcon className="h-4 w-4 text-gray-400" />
                   Editar Tarea
@@ -74,6 +97,7 @@ export default function TaskCard({ task }: TaskCardProps) {
                   className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-red-500 ${
                     focus ? "bg-red-50" : ""
                   }`}
+                  onClick={() => mutate({ taskId: task._id, projectId })}
                 >
                   <TrashIcon className="h-4 w-4 text-red-400" />
                   Eliminar Tarea
