@@ -64,6 +64,9 @@ export default function TaskCard({ task }: TaskCardProps) {
                   className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-gray-900 ${
                     focus ? "bg-gray-100" : ""
                   }`}
+                  onClick={() =>
+                    navigate(location.pathname + `?viewTask=${task._id}`)
+                  }
                 >
                   <EyeIcon className="h-4 w-4 text-gray-400" />
                   Ver Tarea
