@@ -1,4 +1,25 @@
 import { z } from "zod";
+/** Auth & Users */
+export const AuthSchema = z.object({
+  name: z.string(),
+  email: z.string(),
+  password: z.string(),
+  password_confirmation: z.string(),
+  token: z.string(),
+});
+
+export type Auth = z.infer<typeof AuthSchema>;
+
+export type UserLoginForm = Pick<Auth, "email" | "password">;
+
+export type UserRegistrationForm = Pick<
+  Auth,
+  "email" | "name" | "password" | "password_confirmation"
+>;
+
+export type ConfirmToken = Pick<Auth, "token">;
+
+export type RequestConfirmationCodeForm = Pick<Auth, "email">;
 
 /** Tasks */
 export const TaskStatusSchema = z.enum([
