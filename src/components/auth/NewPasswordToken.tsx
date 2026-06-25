@@ -1,21 +1,30 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import type { Dispatch, SetStateAction } from "react";
 import { PinInput } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import type { ConfirmToken } from "@/types";
-import { confirmAccount } from "@/api/AuthAPI";
+import { validateToken } from "@/api/AuthAPI";
 
-export default function ConfirmAccountView() {
-  const [token, setToken] = useState<string[]>([]);
+type NewPasswordTokenProps = {
+  token: string[];
+  setToken: Dispatch<SetStateAction<string[]>>;
+  setIsValidToken: Dispatch<SetStateAction<boolean>>;
+};
 
+export default function NewPasswordToken({
+  token,
+  setToken,
+  setIsValidToken,
+}: NewPasswordTokenProps) {
   const { mutate } = useMutation({
-    mutationFn: confirmAccount,
+    mutationFn: validateToken,
     onError: (error) => {
       toast.error(error.message);
     },
     onSuccess: (data) => {
       toast.success(data);
+      setIsValidToken(true);
     },
   });
 
@@ -23,25 +32,17 @@ export default function ConfirmAccountView() {
     setToken(details.value);
   };
 
-  const handleComplete = () => {
-    const confirmationToken: ConfirmToken["token"] = token.join("");
+  const handleComplete = (details: { value: string[] }) => {
+    const confirmationToken: ConfirmToken["token"] = details.value.join("");
     mutate({ token: confirmationToken });
   };
 
   return (
     <>
-      <h1 className="text-5xl font-black text-white">Confirma tu Cuenta</h1>
-
-      <p className="text-2xl font-light text-white mt-5">
-        Ingresa el código que recibiste{" "}
-        <span className="text-fuchsia-500 font-bold">por e-mail</span>
-      </p>
-
-      <form className="space-y-8 p-10 bg-white mt-10">
+      <form className="space-y-8 p-10 rounded-lg bg-white mt-10">
         <label className="font-normal text-2xl text-center block">
           Código de 6 dígitos
         </label>
-
         <div className="flex justify-center gap-5">
           <PinInput.Root
             otp
@@ -63,10 +64,9 @@ export default function ConfirmAccountView() {
           </PinInput.Root>
         </div>
       </form>
-
       <nav className="mt-10 flex flex-col space-y-4">
         <Link
-          to="/auth/request-code"
+          to="/auth/forgot-password"
           className="text-center text-gray-300 font-normal"
         >
           Solicitar un nuevo Código
