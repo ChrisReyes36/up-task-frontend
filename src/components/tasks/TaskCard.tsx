@@ -13,9 +13,10 @@ import { deleteTask } from "@/api/TaskAPI";
 
 type TaskCardProps = {
   task: Task;
+  canEdit: boolean;
 };
 
-export default function TaskCard({ task }: TaskCardProps) {
+export default function TaskCard({ task, canEdit }: TaskCardProps) {
   const navigate = useNavigate();
   const params = useParams();
   const projectId = params.projectId!;
@@ -38,6 +39,7 @@ export default function TaskCard({ task }: TaskCardProps) {
         <button
           type="button"
           className="text-xl font-bold text-slate-600 text-left"
+          onClick={() => navigate(location.pathname + `?editTask=${task._id}`)}
         >
           {task.name}
         </button>
@@ -74,39 +76,43 @@ export default function TaskCard({ task }: TaskCardProps) {
               )}
             </MenuItem>
 
-            <MenuItem>
-              {({ focus }) => (
-                <button
-                  type="button"
-                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-gray-900 ${
-                    focus ? "bg-gray-100" : ""
-                  }`}
-                  onClick={() =>
-                    navigate(location.pathname + `?editTask=${task._id}`)
-                  }
-                >
-                  <PencilIcon className="h-4 w-4 text-gray-400" />
-                  Editar Tarea
-                </button>
-              )}
-            </MenuItem>
+            {canEdit && (
+              <>
+                <MenuItem>
+                  {({ focus }) => (
+                    <button
+                      type="button"
+                      className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-gray-900 ${
+                        focus ? "bg-gray-100" : ""
+                      }`}
+                      onClick={() =>
+                        navigate(location.pathname + `?editTask=${task._id}`)
+                      }
+                    >
+                      <PencilIcon className="h-4 w-4 text-gray-400" />
+                      Editar Tarea
+                    </button>
+                  )}
+                </MenuItem>
 
-            <div className="my-1 h-px bg-gray-900/5" />
+                <div className="my-1 h-px bg-gray-900/5" />
 
-            <MenuItem>
-              {({ focus }) => (
-                <button
-                  type="button"
-                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-red-500 ${
-                    focus ? "bg-red-50" : ""
-                  }`}
-                  onClick={() => mutate({ taskId: task._id, projectId })}
-                >
-                  <TrashIcon className="h-4 w-4 text-red-400" />
-                  Eliminar Tarea
-                </button>
-              )}
-            </MenuItem>
+                <MenuItem>
+                  {({ focus }) => (
+                    <button
+                      type="button"
+                      className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-red-500 ${
+                        focus ? "bg-red-50" : ""
+                      }`}
+                      onClick={() => mutate({ taskId: task._id, projectId })}
+                    >
+                      <TrashIcon className="h-4 w-4 text-red-400" />
+                      Eliminar Tarea
+                    </button>
+                  )}
+                </MenuItem>
+              </>
+            )}
           </MenuItems>
         </Menu>
       </div>

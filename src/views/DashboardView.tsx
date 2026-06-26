@@ -9,8 +9,12 @@ import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { deleteProject, getProjects } from "@/api/ProjectAPI";
+import useAuth from "@/hooks/useAuth";
+import { isManager } from "@/utils/policies";
 
 export default function DashboardView() {
+  const { data: user, isLoading: authLoading } = useAuth();
+
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
@@ -28,9 +32,9 @@ export default function DashboardView() {
     },
   });
 
-  if (isLoading) return "Cargando...";
+  if (isLoading && authLoading) return "Cargando...";
 
-  if (data)
+  if (data && user)
     return (
       <>
         <h1 className="text-5xl font-black">Mis Proyecto</h1>
@@ -59,6 +63,20 @@ export default function DashboardView() {
               >
                 <div className="flex min-w-0 gap-x-4">
                   <div className="min-w-0 flex-auto space-y-2">
+                    <div className="mb-2">
+                      {isManager(
+                        project.manager.toString(),
+                        user._id.toString(),
+                      ) ? (
+                        <p className="font-bold text-xs uppercase bg-indigo-50 text-indigo-500 border-2 border-indigo-500 rounded-lg inline-block py-1 px-5">
+                          Manager
+                        </p>
+                      ) : (
+                        <p className="font-bold text-xs uppercase bg-green-50 text-green-500 border-2 border-green-500 rounded-lg inline-block py-1 px-5">
+                          Colaborador
+                        </p>
+                      )}
+                    </div>
                     <Link
                       to={`/projects/${project._id}`}
                       className="text-gray-600 cursor-pointer hover:underline text-3xl font-bold"
@@ -106,36 +124,43 @@ export default function DashboardView() {
                         )}
                       </MenuItem>
 
-                      <MenuItem>
-                        {({ focus }) => (
-                          <Link
-                            to={`/projects/${project._id}/edit`}
-                            className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-gray-900 ${
-                              focus ? "bg-gray-100" : ""
-                            }`}
-                          >
-                            <PencilIcon className="h-4 w-4 text-gray-400" />
-                            Editar Proyecto
-                          </Link>
-                        )}
-                      </MenuItem>
+                      {isManager(
+                        project.manager.toString(),
+                        user._id.toString(),
+                      ) && (
+                        <>
+                          <MenuItem>
+                            {({ focus }) => (
+                              <Link
+                                to={`/projects/${project._id}/edit`}
+                                className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-gray-900 ${
+                                  focus ? "bg-gray-100" : ""
+                                }`}
+                              >
+                                <PencilIcon className="h-4 w-4 text-gray-400" />
+                                Editar Proyecto
+                              </Link>
+                            )}
+                          </MenuItem>
 
-                      <div className="my-1 h-px bg-gray-900/5" />
+                          <div className="my-1 h-px bg-gray-900/5" />
 
-                      <MenuItem>
-                        {({ focus }) => (
-                          <button
-                            type="button"
-                            className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-red-500 ${
-                              focus ? "bg-red-50" : ""
-                            }`}
-                            onClick={() => mutate(project._id)}
-                          >
-                            <TrashIcon className="h-4 w-4 text-red-400" />
-                            Eliminar Proyecto
-                          </button>
-                        )}
-                      </MenuItem>
+                          <MenuItem>
+                            {({ focus }) => (
+                              <button
+                                type="button"
+                                className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-red-500 ${
+                                  focus ? "bg-red-50" : ""
+                                }`}
+                                onClick={() => mutate(project._id)}
+                              >
+                                <TrashIcon className="h-4 w-4 text-red-400" />
+                                Eliminar Proyecto
+                              </button>
+                            )}
+                          </MenuItem>
+                        </>
+                      )}
                     </MenuItems>
                   </Menu>
                 </div>
