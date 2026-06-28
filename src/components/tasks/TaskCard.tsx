@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useDraggable } from "@dnd-kit/react";
 import type { Task } from "@/types";
 import { deleteTask } from "@/api/TaskAPI";
 
@@ -17,6 +18,14 @@ type TaskCardProps = {
 };
 
 export default function TaskCard({ task, canEdit }: TaskCardProps) {
+  const { ref } = useDraggable({
+    id: task._id,
+    data: {
+      taskId: task._id,
+      currentStatus: task.status,
+    },
+    disabled: !canEdit,
+  });
   const navigate = useNavigate();
   const params = useParams();
   const projectId = params.projectId!;
@@ -34,7 +43,10 @@ export default function TaskCard({ task, canEdit }: TaskCardProps) {
   });
 
   return (
-    <li className="p-5 bg-white border-slate-300 flex justify-between gap-3">
+    <li
+      ref={ref}
+      className="p-5 bg-white border-slate-300 flex justify-between gap-3"
+    >
       <div className="min-w-0 flex flex-col gap-y-4">
         <button
           type="button"
