@@ -1,21 +1,37 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { lazy } from "react";
 import AppLayout from "./layouts/AppLayout";
-import DashboardView from "./views/DashboardView";
-import CreateProjectView from "./views/projects/CreateProjectView";
-import EditProjectView from "./views/projects/EditProjectView";
-import ProjectDetailsView from "./views/projects/ProjectDetailsView";
-import AuthLayout from "./layouts/AuthLayout";
-import LoginView from "./views/auth/LoginView";
-import RegisterView from "./views/auth/RegisterView";
-import ConfirmAccountView from "./views/auth/ConfirmAccountView";
-import RequestNewCodeView from "./views/auth/RequestNewCodeView";
-import ForgotPasswordView from "./views/auth/ForgotPasswordView";
-import NewPasswordView from "./views/auth/NewPasswordView";
-import ProjectTeamView from "./views/projects/ProjectTeamView";
-import ProfileView from "./views/profile/ProfileView";
-import ChangePasswordView from "./views/profile/ChangePasswordView";
 import ProfileLayout from "./layouts/ProfileLayout";
-import NotFound from "./views/404/NotFound";
+import AuthLayout from "./layouts/AuthLayout";
+
+const DashboardView = lazy(() => import("./views/DashboardView"));
+const CreateProjectView = lazy(
+  () => import("./views/projects/CreateProjectView"),
+);
+const EditProjectView = lazy(() => import("./views/projects/EditProjectView"));
+const ProjectDetailsView = lazy(
+  () => import("./views/projects/ProjectDetailsView"),
+);
+
+const LoginView = lazy(() => import("./views/auth/LoginView"));
+const RegisterView = lazy(() => import("./views/auth/RegisterView"));
+const ConfirmAccountView = lazy(
+  () => import("./views/auth/ConfirmAccountView"),
+);
+const RequestNewCodeView = lazy(
+  () => import("./views/auth/RequestNewCodeView"),
+);
+const ForgotPasswordView = lazy(
+  () => import("./views/auth/ForgotPasswordView"),
+);
+const NewPasswordView = lazy(() => import("./views/auth/NewPasswordView"));
+
+const ProjectTeamView = lazy(() => import("./views/projects/ProjectTeamView"));
+const ProfileView = lazy(() => import("./views/profile/ProfileView"));
+const ChangePasswordView = lazy(
+  () => import("./views/profile/ChangePasswordView"),
+);
+const NotFound = lazy(() => import("./views/404/NotFound"));
 
 export default function Router() {
   return (
