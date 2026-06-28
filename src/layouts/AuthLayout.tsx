@@ -3,12 +3,16 @@ import { ToastContainer } from "react-toastify";
 import Logo from "@/components/Logo";
 import useAuth from "@/hooks/useAuth";
 
-export default function AuthLayout() {
+type AuthLayoutProps = {
+  showRedirect?: boolean;
+};
+
+export default function AuthLayout({ showRedirect = true }: AuthLayoutProps) {
   const { data, isLoading } = useAuth();
 
-  if (isLoading) return "Cargando...";
+  if (showRedirect && isLoading) return "Cargando...";
 
-  if (data) return <Navigate to="/" />;
+  if (showRedirect && data) return <Navigate to="/" />;
 
   return (
     <>

@@ -5,22 +5,26 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { updateStatus } from "@/api/TaskAPI";
-import { type Task, TaskStatusSchema, type TaskStatus } from "@/types";
+import {
+  type TaskProject,
+  TaskStatusSchema,
+  type TaskStatus,
+} from "@/types";
 import { statusTranslations } from "@/locales/es";
 import TaskCard from "./TaskCard";
 import DropTask from "./DropTask";
 
 type TaskListProps = {
-  tasks: Task[];
+  tasks: TaskProject[];
   canEdit: boolean;
 };
 
 type GroupTask = {
-  [key in TaskStatus]: Task[];
+  [key in TaskStatus]: TaskProject[];
 };
 
 type ProjectDetails = {
-  tasks: Task[];
+  tasks: TaskProject[];
 };
 
 const initialStatusGroup: GroupTask = {

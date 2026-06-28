@@ -9,11 +9,11 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useDraggable } from "@dnd-kit/react";
-import type { Task } from "@/types";
+import type { TaskProject } from "@/types";
 import { deleteTask } from "@/api/TaskAPI";
 
 type TaskCardProps = {
-  task: Task;
+  task: TaskProject;
   canEdit: boolean;
 };
 
